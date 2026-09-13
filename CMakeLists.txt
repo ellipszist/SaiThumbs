@@ -114,6 +114,10 @@ string(TIMESTAMP BUILD_YEAR "%Y")
 string(TIMESTAMP BUILD_MONTH "%m") 
 string(TIMESTAMP BUILD_DAY "%d") 
 
+# remove leading zeros
+math(EXPR BUILD_MONTH ${BUILD_MONTH})
+math(EXPR BUILD_DAY ${BUILD_DAY})
+
 configure_file(
 	source/version.rc.in
 	"${PROJECT_BINARY_DIR}/source/version.rc"
