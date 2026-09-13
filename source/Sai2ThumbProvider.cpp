@@ -222,7 +222,18 @@ HRESULT Sai2ThumbProvider::GetThumbnail(
 HRESULT
 Sai2ThumbProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode) throw()
 {
-	mio::mmap_source NewMappedFile = mio::mmap_source(pszFilePath);
+	mio::mmap_source NewMappedFile;
+	try
+	{
+		NewMappedFile = mio::mmap_source(pszFilePath);
+	}
+	catch( std::system_error& )
+	{
+		// Sometimes mio can return `ERROR_SHARING_VIOLATION` on large documents
+		// when Sai is still saving the file while windows is trying to create a
+		// thumbnail for it
+		return E_FAIL;
+	}
 
 	if( !NewMappedFile.is_open() )
 	{
